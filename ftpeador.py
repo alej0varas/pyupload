@@ -3,7 +3,7 @@
 #a subir y crear el archivo a subir.
 from ftplib import FTP
 import re
-
+import time
 #next line will disapear when wx is done
 #arch=raw_input('file to upload: ')
 
@@ -28,7 +28,9 @@ def uploader(arch):
 	
 	#envia y guarda el archivo, con el nombre que le das a STOR
 	# f es el objeto f = open('test.txt', 'r')
-	este="uploader" + '.' + arch + '.' + "now"
+	mes=time.strftime('%Y%m%d')
+	now=time.strftime('%H%M%S')
+	este= mes + '.' + arch + '.' + now
 	ftp.mkd(este)
 	ftp.cwd(este)
 	tempura="STOR" + ' ' + arch
