@@ -11,6 +11,83 @@ import time
 
 
 
+class ExaminarFrame(wx.Frame):
+    def __init__(self, *args, **kwds):
+        # begin wxGlade: ExaminarFrame.__init__
+        kwds["style"] = wx.DEFAULT_FRAME_STYLE
+        wx.Frame.__init__(self, *args, **kwds)
+        self.box_lista_archivos = wx.ListBox(self, -1, choices=[])
+        self.boton_aceptar = wx.Button(self, -1, "Aceptar")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.archivos_dc_handler, self.box_lista_archivos)
+        self.Bind(wx.EVT_LISTBOX, self.archivos_handler, self.box_lista_archivos)
+        self.Bind(wx.EVT_BUTTON, self.aceptar_handler, self.boton_aceptar)
+        # end wxGlade
+        
+        self.llenar_box_lista_archivos()
+        self.ruta_archivo = ''
+
+    def __set_properties(self):
+        # begin wxGlade: ExaminarFrame.__set_properties
+        self.SetTitle("frame_2")
+        self.box_lista_archivos.SetMinSize((200,100))
+        self.boton_aceptar.SetMinSize((94, 32))
+        # end wxGlade
+
+    def __do_layout(self):
+        # begin wxGlade: ExaminarFrame.__do_layout
+        sizer_2 = wx.BoxSizer(wx.VERTICAL)
+        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_5 = wx.BoxSizer(wx.VERTICAL)
+        sizer_3.Add(self.box_lista_archivos, 0, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL|wx.ADJUST_MINSIZE, 0)
+        sizer_5.Add(self.boton_aceptar, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 0)
+        sizer_3.Add(sizer_5, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 0)
+        sizer_2.Add(sizer_3, 1, wx.EXPAND, 0)
+        self.SetSizer(sizer_2)
+        sizer_2.Fit(self)
+        self.Layout()
+        # end wxGlade
+
+    def archivos_dc_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
+        print "Event handler `archivos_dc_handler' not implemented"
+        event.Skip()
+
+    def archivos_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
+        print "Archivo selecionado"
+        seleccion = event.GetSelection()
+        if seleccion == '..':
+            #TODO
+            print "Bajar un dir"
+        else:
+            self.archivo_seleccionado = self.lista_archivos[seleccion]
+        #event.Skip()
+
+    def aceptar_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
+        print "Aceptar"
+        frame_1.archivo = self.archivo_seleccionado
+        frame_1.texto_ruta_archivo.SetValue(frame_1.archivo)
+        #self.Disable()
+        self.Hide()
+        frame_1.Enable()
+        app.SetTopWindow(frame_1)
+        #event.Skip()
+
+    def obtener_lista_archivos(self):
+        print "Obtener lista archivos"
+        self.ruta_archivo = os.curdir
+        self.lista_archivos = os.listdir(self.ruta_archivo)
+
+    def llenar_box_lista_archivos(self):
+        print "Llenar box_lista_archivos"
+        self.obtener_lista_archivos()
+        self.box_lista_archivos.AppendItems(self.lista_archivos)
+
+# end of class ExaminarFrame
+
+
 class MyFrame1(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: MyFrame1.__init__
@@ -18,7 +95,7 @@ class MyFrame1(wx.Frame):
         wx.Frame.__init__(self, *args, **kwds)
         self.texto_ruta_archivo = wx.TextCtrl(self, -1, "")
         self.boton_examinar = wx.Button(self, -1, "Examinar")
-        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap("data/logo.png", wx.BITMAP_TYPE_ANY))
+        self.bitmap_1 = wx.StaticBitmap(self, -1, wx.Bitmap("/root/imagenes/ingealgo.png", wx.BITMAP_TYPE_ANY))
         self.boton_subir = wx.Button(self, -1, "Subir")
         self.texto_estado = wx.TextCtrl(self, -1, "Listo", style=wx.TE_READONLY)
 
@@ -29,6 +106,7 @@ class MyFrame1(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.examinar_handler, self.boton_examinar)
         self.Bind(wx.EVT_BUTTON, self.subir_handler, self.boton_subir)
         # end wxGlade
+        self.archivo = None
 
     def __set_properties(self):
         # begin wxGlade: MyFrame1.__set_properties
@@ -56,6 +134,10 @@ class MyFrame1(wx.Frame):
         self.texto_estado.SetBackgroundColour("#ffffff")
         print "Abrir ventana pare elegir ruta_archivo"
         self.texto_estado.SetValue("Abrir ventana pare elegir ruta_archivo")
+        frame_2 = ExaminarFrame(None, -1, "Examinar")
+        app.SetTopWindow(frame_2)
+        frame_1.Disable()
+        frame_2.Show()
         #event.Skip()
 
     def subir_handler(self, event): # wxGlade: MyFrame1.<event_handler>
