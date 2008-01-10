@@ -40,3 +40,6 @@ def uploader(arch):
 	ftp.retrlines('LIST')
 	#sales simpiamente
 	ftp.quit()
+
+	#relevant thig here is  the var called "este", for 
+	#wx to generate the url for downloading the file.
