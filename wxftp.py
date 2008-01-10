@@ -18,6 +18,8 @@ class ExaminarFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kwds)
         self.box_lista_archivos = wx.ListBox(self, -1, choices=[])
         self.boton_aceptar = wx.Button(self, -1, "Aceptar")
+        self.texto_estado = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
+
 
         self.__set_properties()
         self.__do_layout()
@@ -45,7 +47,8 @@ class ExaminarFrame(wx.Frame):
         sizer_3.Add(self.box_lista_archivos, 0, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL|wx.ADJUST_MINSIZE, 0)
         sizer_5.Add(self.boton_aceptar, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 0)
         sizer_3.Add(sizer_5, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 0)
-        sizer_2.Add(sizer_3, 1, wx.EXPAND, 0)
+        sizer_2.Add(sizer_3, 0, wx.EXPAND, 0)
+        sizer_2.Add(self.texto_estado, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ADJUST_MINSIZE, 0)
         self.SetSizer(sizer_2)
         sizer_2.Fit(self)
         self.Layout()
@@ -81,9 +84,7 @@ class ExaminarFrame(wx.Frame):
 
     def aceptar_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
         print "Aceptar"
-        #
-        #si es directorio no pasa
-        #
+        self.texto_estado.SetBackgroundColour("#ffffff")
         if os.path.isfile(self.archivo_seleccionado):
             frame_1.archivo = self.archivo_seleccionado
             frame_1.texto_ruta_archivo.SetValue(frame_1.archivo)
@@ -92,7 +93,8 @@ class ExaminarFrame(wx.Frame):
             frame_1.Enable()
             app.SetTopWindow(frame_1)
         elif os.path.isdir(self.archivo_seleccionado):
-            print "ESDIR NO VALE"
+            self.texto_estado.SetValue("Selecciono un directorio")
+            self.texto_estado.SetBackgroundColour("#ff0000")
         #event.Skip()
 
     def obtener_lista_archivos(self):
