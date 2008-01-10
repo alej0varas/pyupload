@@ -26,9 +26,9 @@ class ExaminarFrame(wx.Frame):
         self.Bind(wx.EVT_LISTBOX, self.archivos_handler, self.box_lista_archivos)
         self.Bind(wx.EVT_BUTTON, self.aceptar_handler, self.boton_aceptar)
         # end wxGlade
-        
+
+        self.ruta_archivo = os.path.abspath(os.curdir)
         self.llenar_box_lista_archivos()
-        self.ruta_archivo = ''
 
     def __set_properties(self):
         # begin wxGlade: ExaminarFrame.__set_properties
@@ -57,33 +57,58 @@ class ExaminarFrame(wx.Frame):
 
     def archivos_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
         print "Archivo selecionado"
-        seleccion = event.GetSelection()
-        if seleccion == '..':
+        seleccion_int = event.GetSelection()
+        print seleccion_int
+        if seleccion_int == 0:
+            os.chdir(os.pardir)
+            self.ruta_archivo = os.path.abspath(os.curdir)#baja un dir
+            print "Nueva ruta %s" % self.ruta_archivo
+            self.llenar_box_lista_archivos()
             #TODO
             print "Bajar un dir"
         else:
-            self.archivo_seleccionado = self.lista_archivos[seleccion]
+            seleccion_str = self.lista_archivos[seleccion_int-1]#uno menos por Atras
+            ruta = os.path.abspath(seleccion_str)
+            self.archivo_seleccionado = ruta
+            if os.path.isdir(ruta):
+                os.chdir(ruta)
+                self.ruta_archivo = ruta
+                self.llenar_box_lista_archivos()
+                print "es dir %s " % self.ruta_archivo
+            elif os.path.isfile(ruta):
+                print "es file %s " % self.archivo_seleccionado
         #event.Skip()
 
     def aceptar_handler(self, event): # wxGlade: ExaminarFrame.<event_handler>
         print "Aceptar"
-        frame_1.archivo = self.archivo_seleccionado
-        frame_1.texto_ruta_archivo.SetValue(frame_1.archivo)
-        #self.Disable()
-        self.Hide()
-        frame_1.Enable()
-        app.SetTopWindow(frame_1)
+        #
+        #si es directorio no pasa
+        #
+        if os.path.isfile(self.archivo_seleccionado):
+            frame_1.archivo = self.archivo_seleccionado
+            frame_1.texto_ruta_archivo.SetValue(frame_1.archivo)
+            #self.Disable()
+            self.Hide()
+            frame_1.Enable()
+            app.SetTopWindow(frame_1)
+        elif os.path.isdir(self.archivo_seleccionado):
+            print "ESDIR NO VALE"
         #event.Skip()
 
     def obtener_lista_archivos(self):
         print "Obtener lista archivos"
-        self.ruta_archivo = os.curdir
         self.lista_archivos = os.listdir(self.ruta_archivo)
 
     def llenar_box_lista_archivos(self):
         print "Llenar box_lista_archivos"
         self.obtener_lista_archivos()
-        self.box_lista_archivos.AppendItems(self.lista_archivos)
+        self.box_lista_archivos.Clear()
+        #self.box_lista_archivos.Append("Atras")
+        items = ["atras"]
+        items.extend(self.lista_archivos)
+        self.box_lista_archivos.AppendItems(items)
+        self.box_lista_archivos.SetItemBackgroundColour(0,"BLACK")
+        
 
 # end of class ExaminarFrame
 
