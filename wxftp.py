@@ -6,6 +6,8 @@ import wx
 import os
 import time
 
+from ftpeador import uploader
+
 # begin wxGlade: extracode
 # end wxGlade
 
@@ -171,6 +173,9 @@ class MyFrame1(wx.Frame):
         self.texto_estado.SetBackgroundColour("#ffffff")
         texto = "Validar ruta(con otro metodo). Subir el archivo. "
         if self.ruta_valida():
+            ruta = os.path.dirname(self.archivo)
+            archivo = os.path.basename(self.archivo)
+            uploader(ruta, archivo)
             texto = "Subir el archivo"
             #Subir el archivo
         else:
